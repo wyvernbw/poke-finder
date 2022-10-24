@@ -5,14 +5,14 @@ import { trpc } from "../utils/trpc";
 import { motion } from "framer-motion";
 
 const usePokemonQuery = (id: string) => {
-  const query = trpc.pokemon.getPokemon.useQuery({ id });
+  const query = trpc.pokemon.getPokemon.useQuery({ id: Number(id) });
   // fetch next pokemon as well
-  trpc.pokemon.getPokemon.useQuery({ id: String(Number(id) + 1) });
+  trpc.pokemon.getPokemon.useQuery({ id: Number(id) + 1 });
   return query;
 };
 
 const Home: NextPage = () => {
-  const [id, setId] = useState("");
+  const [id, setId] = useState("1");
   const query = usePokemonQuery(id);
 
   return (
@@ -59,6 +59,7 @@ const SearchBar = ({
           id="search"
           onChange={(e) => onchange(e.target.value)}
           className="rounded-md px-4 py-2 text-zinc-900 opacity-60"
+          defaultValue={id}
         />
       </div>
       {id ? (
@@ -76,8 +77,10 @@ const SearchBar = ({
               style={{ imageRendering: "pixelated" }}
             />
           </motion.div>
+        ) : query.isLoading ? (
+          <p className="flex h-24 items-center">loading...</p>
         ) : (
-          <p>loading...</p>
+          <p className="flex h-24 items-center">not found</p>
         )
       ) : (
         <p>Input a valid id</p>

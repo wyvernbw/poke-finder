@@ -3,7 +3,7 @@ import { publicProcedure, router } from "../trpc";
 
 export const pokemonRouter = router({
   getPokemon: publicProcedure
-    .input(z.object({ id: z.string().min(1).default("1") }))
+    .input(z.object({ id: z.number().int().min(1).max(905) }))
     .query(async ({ input }) => {
       return fetch(`https://pokeapi.co/api/v2/pokemon/${input.id}`)
         .then((res) => res.json())
