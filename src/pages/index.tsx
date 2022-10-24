@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
+import { motion } from "framer-motion";
 
 const usePokemonQuery = (id: string) => {
   const query = trpc.pokemon.getPokemon.useQuery({ id });
@@ -62,19 +63,19 @@ const SearchBar = ({
       </div>
       {id ? (
         query.data ? (
-          <div className="flex items-center gap-4 ">
+          <motion.div className="flex items-center gap-4 " layout>
             <p>
               found{" "}
               <span className="bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent">
                 {query.data.name}
               </span>
             </p>
-            <img
+            <motion.img
               src={query.data.icon}
               alt=""
               style={{ imageRendering: "pixelated" }}
             />
-          </div>
+          </motion.div>
         ) : (
           <p>loading...</p>
         )
