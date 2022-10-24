@@ -5,6 +5,8 @@ import { trpc } from "../utils/trpc";
 
 const usePokemonQuery = (id: string) => {
   const query = trpc.pokemon.getPokemon.useQuery({ id });
+  // fetch next pokemon as well
+  trpc.pokemon.getPokemon.useQuery({ id: String(Number(id) + 1) });
   return query;
 };
 
@@ -13,12 +15,27 @@ const Home: NextPage = () => {
   const query = usePokemonQuery(id);
 
   return (
-    <div className="h-screen w-full bg-zinc-900">
-      <div className="flex flex-col items-center p-8 text-white">
-        <h1>Poke finder</h1>
-        <SearchBar id={id} query={query} onchange={(value) => setId(value)} />
+    <>
+      <Head>
+        <title>Poke finder</title>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@500&display=swap"
+          rel="stylesheet"
+        />
+
+        <link
+          rel="shortcut icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐙</text></svg>"
+          type="image/x-icon"
+        />
+      </Head>
+      <div className="h-screen w-full bg-zinc-900">
+        <div className="flex flex-col items-center p-8 text-white">
+          <h1 className="text-xl">Poke finder</h1>
+          <SearchBar id={id} query={query} onchange={(value) => setId(value)} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 export default Home;
@@ -45,8 +62,13 @@ const SearchBar = ({
       </div>
       {id ? (
         query.data ? (
-          <div className="flex items-center gap-4">
-            <p>{`found ${query.data.name}`}</p>
+          <div className="flex items-center gap-4 ">
+            <p>
+              found{" "}
+              <span className="bg-gradient-to-r from-rose-500 to-amber-500 bg-clip-text text-transparent">
+                {query.data.name}
+              </span>
+            </p>
             <img
               src={query.data.icon}
               alt=""
